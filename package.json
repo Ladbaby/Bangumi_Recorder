@@ -2,7 +2,9 @@
   "name": "get_started_electron",
   "version": "0.1.0",
   "private": true,
+  "main": "main.js",
   "scripts": {
+    "start" : "vue-cli-service build && electron .",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
@@ -17,6 +19,7 @@
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "electron": "^20.0.2",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3"
   },
