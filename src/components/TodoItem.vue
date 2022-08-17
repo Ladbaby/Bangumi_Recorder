@@ -34,7 +34,6 @@ export default {
     background-repeat: no-repeat;
     min-height: 20vh;
     width: 47%;
-    /* max-width: 200%; */
     font-family: Roboto,sans-serif;
     font-size: 16px;
     overflow-x: hidden;
@@ -47,7 +46,6 @@ export default {
 }
 
 .cover-div {
-    /* display: inline-block; */
     width: 130px;
     height: 230px;
     overflow: hidden;
@@ -86,7 +84,6 @@ export default {
 
 .header {
     font-size: 20px;
-    /* float:right; */
 }
 
 </style>
