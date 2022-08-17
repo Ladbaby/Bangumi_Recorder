@@ -12,40 +12,35 @@ export default {
         { id: 1, text: "Cheese" },
         { id: 2, text: "Whatever else humans are supposed to eat" },
         { id: 3, text: "冰菓" },
-        { id: 4, text: "某科学的超电磁炮"},
-        { id: 5, text: "为美好世界献上祝福"},
-        { id: 6, text: "夏日重现"}
+        { id: 4, text: "某科学的超电磁炮" },
+        { id: 5, text: "为美好世界献上祝福" },
+        { id: 6, text: "夏日重现" },
       ],
       inputText: "Search",
       ifMaxed: false,
     };
   },
   created() {
-    // this.loadDatabase();
+    this.loadDatabase();
   },
   watch: {
     // animeList: "loadDatabase",
   },
   methods: {
-    // async loadDatabase() {
-    //   const fs = require("fs");
-    //   fs.readFile("./database.json", "utf8", (err, jsonObject) => {
-    //     if (err) {
-    //       console.log("Error callback:", err);
-    //       return;
-    //     }
-    //     try {
-    //       console.log(jsonObject); // string object
-    //       const jsonData = JSON.parse(jsonObject);
-    //       console.log(jsonData); //object type
-    //       for (var i = 0; i < jsonData.data.length; ++i) {
-    //         this.animeList.addChild(jsonData.data[i]);
-    //       }
-    //     } catch (err) {
-    //       console.log("Error while parsing JSON string data:", err);
-    //     }
-    //   });
-    // },
+    async loadDatabase() {
+      var jsonObject = await window.electronAPI.showData();
+      console.log(jsonObject);
+      const jsonData = JSON.parse(jsonObject);
+      console.log(typeof(jsonData));
+      for (var i = 0; i < jsonData.data.length; ++i) {
+        try{
+          this.animeList.push(jsonData.data[i]);
+        }
+        catch (err) {
+          console.log("Error while appending list:", err);
+        }
+      }
+    },
     toMin() {
       window.electronAPI.minApp();
     },
@@ -59,7 +54,7 @@ export default {
     toRestore() {
       this.ifMaxed = !this.ifMaxed;
       window.electronAPI.restoreApp();
-    }
+    },
   },
 };
 </script>
@@ -104,7 +99,12 @@ export default {
           />
         </div>
 
-        <div class="button" id="restore-button" @click="toRestore()" v-if="ifMaxed">
+        <div
+          class="button"
+          id="restore-button"
+          @click="toRestore()"
+          v-if="ifMaxed"
+        >
           <img
             class="icon"
             srcset="
@@ -182,7 +182,6 @@ body {
   height: 100%;
   margin: 0;
   background-color: hsla(0, 0%, 100%, 0.5) !important;
-  
 }
 body {
   overflow-y: hidden;
@@ -222,23 +221,23 @@ body {
   width: 12px;
 }
 #main::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
-    
+
 #main::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.804);
-    border-right: none;
-    border-left: none;
+  background-color: rgba(255, 255, 255, 0.804);
+  border-right: none;
+  border-left: none;
 }
 
 #main::-webkit-scrollbar-track-piece:end {
-    background: transparent;
-    margin-bottom: 10px; 
+  background: transparent;
+  margin-bottom: 10px;
 }
 
 #main::-webkit-scrollbar-track-piece:start {
-    background: transparent;
-    margin-top: 64px;
+  background: transparent;
+  margin-top: 64px;
 }
 #titlebar {
   color: #fff;
@@ -290,17 +289,17 @@ body {
   user-select: none;
 }
 #window-controls .button:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 #window-controls .button:active {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 #close-button:hover {
-  background: #E81123 !important;
+  background: #e81123 !important;
 }
 #close-button:active {
-  background: #F1707A !important;
+  background: #f1707a !important;
 }
 #close-button:active .icon {
   filter: invert(1);
@@ -315,7 +314,6 @@ body {
 }
 
 #app {
-  
   padding-right: 0 !important;
   padding-top: 0 !important;
   padding-left: 0 !important;
