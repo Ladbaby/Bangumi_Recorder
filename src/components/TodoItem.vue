@@ -8,9 +8,10 @@ export default {
 
 <template>
   <span class="card">
-    <a class="cover-div">
+    <div class="cover-div">
       <img src="./image/98987296_p0.jpg" class="cover-image">
-    </a>
+    </div>
+    <br>
     <div class="cover-intro">
       <h2 class="header">{{ todo.text }}</h2>
     </div>
@@ -33,10 +34,12 @@ export default {
     will-change: box-shadow;
     background-repeat: no-repeat;
     min-height: 20vh;
-    width: 47%;
+    width: 150px;
+    height: 280px;
     font-family: Roboto,sans-serif;
     font-size: 16px;
     overflow-x: hidden;
+    overflow-y: hidden;
     text-rendering: optimizeLegibility;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     -webkit-text-size-adjust: 100%;
@@ -50,6 +53,7 @@ export default {
     height: 230px;
     overflow: hidden;
     margin: 10px;
+    margin-bottom: 0;
     position: relative;
     border-radius: 10px;
     float:left;
@@ -84,6 +88,9 @@ export default {
 
 .header {
     font-size: 20px;
+    margin-left: 5px;
+    text-align: center;
+    line-height: 2;
 }
 
 </style>
