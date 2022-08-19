@@ -7,6 +7,7 @@ export default {
   },
   data() {
     return {
+      statusShowItem: {},
       animeList: [
         { id: 0, text: "Vegetables" },
         { id: 1, text: "Cheese" },
@@ -31,15 +32,15 @@ export default {
       var jsonObject = await window.electronAPI.showData();
       console.log(jsonObject);
       const jsonData = JSON.parse(jsonObject);
-      console.log(typeof(jsonData));
+      console.log(typeof jsonData);
       for (var i = 0; i < jsonData.data.length; ++i) {
-        try{
+        try {
           this.animeList.push(jsonData.data[i]);
-        }
-        catch (err) {
+        } catch (err) {
           console.log("Error while appending list:", err);
         }
       }
+      this.initStatus();
     },
     toMin() {
       window.electronAPI.minApp();
@@ -54,6 +55,27 @@ export default {
     toRestore() {
       this.ifMaxed = !this.ifMaxed;
       window.electronAPI.restoreApp();
+    },
+    initStatus() {
+      for (var i = 0; i < this.animeList.length; ++i) {
+        this.statusShowItem[this.animeList[i].id] = 1;
+      }
+    },
+    showDetail(id) {
+      if (this.statusShowItem[id] == 1) {
+        this.statusShowItem[id] = 2;
+      } else {
+        this.statusShowItem[id] = 1;
+      }
+      for (const [key, value] of Object.entries(this.statusShowItem)) {
+        if (key != id) {
+          if (value == 0) {
+            this.statusShowItem[key] = 1;
+          } else {
+            this.statusShowItem[key] = 0;
+          }
+        }
+      }
     },
   },
 };
@@ -147,22 +169,38 @@ export default {
       <input
         autocomplete="off"
         tabindex="1"
-        placeholder="Search..."
+        placeholder=" Search..."
         type="text"
         class="search-box-input"
       />
     </div>
-    <ol class="card-list">
-      <TodoItem
-        v-for="item in animeList"
-        :todo="item"
-        :key="item.id"
-      ></TodoItem>
-    </ol>
+    <TodoItem
+      :animeList="animeList"
+      :statusShowItem="statusShowItem"
+      @show-detail="showDetail"
+    ></TodoItem>
   </div>
 </template>
 
 <style>
+/* .list-complete-item {
+  transition: all 1s;
+  display: inline-block;
+  margin-right: 10px;
+} */
+/* .list {
+  padding-left: 12px;
+  margin-top: 64px;
+  width: 100%;
+  height: 90%;
+}
+.list-enter, .list-leave-to{
+  opacity: 0;
+  transform: translateY(30px);
+}
+.list-leave-active{
+  position: absolute;
+} */
 * {
   margin: 0;
   padding: 0;
@@ -381,9 +419,10 @@ input.search-box-input:focus {
   outline: none !important;
   width: 50%;
 }
-ol.card-list {
+/* ol.card-list {
   padding-left: 12px;
   margin-top: 64px;
   width: 100%;
-}
+  height: 90%;
+} */
 </style>
