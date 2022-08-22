@@ -1,5 +1,8 @@
 <script>
 import TodoItem from "./components/TodoItem.vue";
+const axios = require("axios");
+const cheerio = require("cheerio");
+global.Buffer = global.Buffer || require("buffer").Buffer;
 
 export default {
   components: {
@@ -9,13 +12,13 @@ export default {
     return {
       statusShowItem: {},
       animeList: [
-        { id: 0, text: "Vegetables" },
-        { id: 1, text: "Cheese" },
-        { id: 2, text: "Whatever else humans are supposed to eat" },
-        { id: 3, text: "冰菓" },
-        { id: 4, text: "某科学的超电磁炮" },
-        { id: 5, text: "为美好世界献上祝福" },
-        { id: 6, text: "夏日重现" },
+        // { id: 0, text: "Vegetables", coverImage: "./image/98987296_p0.jpg"},
+        // { id: 1, text: "Cheese", coverImage: "./image/98987296_p0.jpg" },
+        // { id: 2, text: "Whatever else humans are supposed to eat", coverImage: "./image/98987296_p0.jpg" },
+        // { id: 3, text: "冰菓", coverImage: "./image/98987296_p0.jpg" },
+        // { id: 4, text: "某科学的超电磁炮", coverImage: "./image/98987296_p0.jpg" },
+        // { id: 5, text: "为美好世界献上祝福", coverImage: "./image/98987296_p0.jpg" },
+        // { id: 6, text: "夏日重现", coverImage: "./image/98987296_p0.jpg" },
       ],
       inputText: "Search",
       ifMaxed: false,
@@ -41,6 +44,7 @@ export default {
         }
       }
       this.initStatus();
+      this.fetchFromWeb("https://bangumi.tv/subject/27364");
     },
     toMin() {
       window.electronAPI.minApp();
@@ -76,6 +80,67 @@ export default {
           }
         }
       }
+    },
+    async fetchFromWeb(url) {
+      var listLength = this.animeList.length;
+      var newObj = await axios
+        .get(url)
+        .then(function (response) {
+          const $ = cheerio.load(response.data);
+          // console.log($('img.cover').map((i, x) => $(x).attr('src')).toArray()[0]);
+          var objTemp = {};
+          objTemp["id"] = listLength;
+          objTemp["text"] = "冰菓";
+          objTemp["coverImage"] =
+            "https:" +
+            $("img.cover")
+              .map((i, x) => $(x).attr("src"))
+              .toArray()[0];
+          objTemp["coverImage"] = objTemp["coverImage"].replace("/c/", "/l/");
+          return objTemp;
+        })
+        .catch(function (error) {
+          console.log(error);
+          return;
+        });
+      const fileName = /[^/]*$/.exec(newObj["coverImage"]);
+      console.log(newObj["coverImage"])
+      var writeResult = await window.electronAPI.writeCoverImage(
+        "./src/components/coverImages/" + fileName,
+        newObj["coverImage"]
+      );
+
+      // try {
+      //   const response = await axios({
+      //     method: "GET",
+      //     url: newObj["coverImage"],
+      //     responseType: "stream",
+      //   });
+      //   var result = await window.electronAPI.writeCoverImage(
+      //     "./src/components/coverImages/" + fileName,
+      //     response.data
+      //   );
+      //   console.log(result);
+      // } catch (err) {
+      //   throw new Error(err);
+      // }
+
+      // const writeResult = await axios
+      //   .get(newObj["coverImage"])
+      //   .then(function (response) {
+      //     window.electronAPI.writeCoverImage(
+      //       "./src/components/coverImages/" + fileName,
+      //       response.data
+      //     );
+      //   })
+      //   .catch(function (err) {
+      //     console.log(err);
+      //   });
+      console.log(writeResult);
+      newObj["coverImage"] = '' + fileName;
+      this.animeList.push(newObj);
+      this.statusShowItem[newObj["id"]] = 1;
+      console.log(this.animeList);
     },
   },
 };
@@ -183,24 +248,6 @@ export default {
 </template>
 
 <style>
-/* .list-complete-item {
-  transition: all 1s;
-  display: inline-block;
-  margin-right: 10px;
-} */
-/* .list {
-  padding-left: 12px;
-  margin-top: 64px;
-  width: 100%;
-  height: 90%;
-}
-.list-enter, .list-leave-to{
-  opacity: 0;
-  transform: translateY(30px);
-}
-.list-leave-active{
-  position: absolute;
-} */
 * {
   margin: 0;
   padding: 0;
@@ -419,10 +466,4 @@ input.search-box-input:focus {
   outline: none !important;
   width: 50%;
 }
-/* ol.card-list {
-  padding-left: 12px;
-  margin-top: 64px;
-  width: 100%;
-  height: 90%;
-} */
 </style>

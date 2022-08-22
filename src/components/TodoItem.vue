@@ -31,7 +31,12 @@ export default {
       };
     },
     selectedList() {
-      return this.animeList.filter(row => this.statusShowItem[row.id] != 0);
+      return this.animeList.filter((row) => this.statusShowItem[row.id] != 0);
+    },
+    getImgUrl(pet) {
+      // var images = require.context("./coverImages", false, /\.jpg$/);
+      // return images("./" + pet + ".jpg");
+      return require('./coverImages/'+ pet);
     },
   },
 };
@@ -47,7 +52,7 @@ export default {
       @click="$emit('show-detail', item.id)"
     >
       <div class="cover-div">
-        <img src="./image/98987296_p0.jpg" class="cover-image" />
+        <img :src="getImgUrl(item.coverImage)" alt="./coverImages/98987296_p0.jpg" class="cover-image" />
       </div>
       <div class="cover-intro">
         <h2 class="header">{{ item.text }}</h2>
