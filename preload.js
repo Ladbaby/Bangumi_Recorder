@@ -6,5 +6,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   maxApp: () => ipcRenderer.send('max-app'),
   restoreApp: () => ipcRenderer.send('restore-app'),
   showData: () => ipcRenderer.invoke('show-data'),
-  writeCoverImage: (fileName, url) => ipcRenderer.invoke('write-cover-image', fileName, url)
+  writeCoverImage: (fileName, url) => ipcRenderer.invoke('write-cover-image', fileName, url),
+  updateDateBase: (animeList) => ipcRenderer.invoke('update-database', animeList)
 })

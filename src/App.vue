@@ -11,31 +11,27 @@ export default {
   data() {
     return {
       statusShowItem: {},
-      animeList: [
-        // { id: 0, text: "Vegetables", coverImage: "./image/98987296_p0.jpg"},
-        // { id: 1, text: "Cheese", coverImage: "./image/98987296_p0.jpg" },
-        // { id: 2, text: "Whatever else humans are supposed to eat", coverImage: "./image/98987296_p0.jpg" },
-        // { id: 3, text: "冰菓", coverImage: "./image/98987296_p0.jpg" },
-        // { id: 4, text: "某科学的超电磁炮", coverImage: "./image/98987296_p0.jpg" },
-        // { id: 5, text: "为美好世界献上祝福", coverImage: "./image/98987296_p0.jpg" },
-        // { id: 6, text: "夏日重现", coverImage: "./image/98987296_p0.jpg" },
-      ],
+      animeList: [],
       inputText: "Search",
       ifMaxed: false,
     };
   },
   created() {
     this.loadDatabase();
+    this.$watch('animeList', () => window.electronAPI.updateDateBase(JSON.stringify({"data": this.animeList})), {deep: true});
   },
-  watch: {
-    // animeList: "loadDatabase",
-  },
+  // watch: {
+  //   animeList: {
+  //     handler() {
+  //       window.electronAPI.updateDateBase(this.animeList);
+  //     },
+  //     deep: true
+  //   },
+  // },
   methods: {
     async loadDatabase() {
       var jsonObject = await window.electronAPI.showData();
-      console.log(jsonObject);
       const jsonData = JSON.parse(jsonObject);
-      console.log(typeof jsonData);
       for (var i = 0; i < jsonData.data.length; ++i) {
         try {
           this.animeList.push(jsonData.data[i]);
@@ -44,8 +40,11 @@ export default {
         }
       }
       this.initStatus();
-      this.fetchFromWeb("https://bangumi.tv/subject/27364");
+      // this.fetchFromWeb("https://bangumi.tv/subject/27364");
     },
+    // updateDateBase(){
+    //   window.electronAPI.updateDateBase(this.animeList);
+    // },
     toMin() {
       window.electronAPI.minApp();
     },
@@ -87,7 +86,6 @@ export default {
         .get(url)
         .then(function (response) {
           const $ = cheerio.load(response.data);
-          // console.log($('img.cover').map((i, x) => $(x).attr('src')).toArray()[0]);
           var objTemp = {};
           objTemp["id"] = listLength;
           objTemp["text"] = "冰菓";
@@ -104,39 +102,10 @@ export default {
           return;
         });
       const fileName = /[^/]*$/.exec(newObj["coverImage"]);
-      console.log(newObj["coverImage"])
-      var writeResult = await window.electronAPI.writeCoverImage(
+      await window.electronAPI.writeCoverImage(
         "./src/components/coverImages/" + fileName,
         newObj["coverImage"]
       );
-
-      // try {
-      //   const response = await axios({
-      //     method: "GET",
-      //     url: newObj["coverImage"],
-      //     responseType: "stream",
-      //   });
-      //   var result = await window.electronAPI.writeCoverImage(
-      //     "./src/components/coverImages/" + fileName,
-      //     response.data
-      //   );
-      //   console.log(result);
-      // } catch (err) {
-      //   throw new Error(err);
-      // }
-
-      // const writeResult = await axios
-      //   .get(newObj["coverImage"])
-      //   .then(function (response) {
-      //     window.electronAPI.writeCoverImage(
-      //       "./src/components/coverImages/" + fileName,
-      //       response.data
-      //     );
-      //   })
-      //   .catch(function (err) {
-      //     console.log(err);
-      //   });
-      console.log(writeResult);
       newObj["coverImage"] = '' + fileName;
       this.animeList.push(newObj);
       this.statusShowItem[newObj["id"]] = 1;

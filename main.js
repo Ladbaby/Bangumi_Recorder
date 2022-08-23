@@ -5,7 +5,6 @@ const path = require("path");
 // var remote = require("electron").remote;
 // var dialog = remote.require("dialog");
 var fs = require("fs");
-const request = require("request");
 const axios = require("axios");
 
 let mainWindow;
@@ -42,9 +41,18 @@ function readDatabase() {
 	var jsonString = fs.readFileSync("./database.json", "utf8");
 	return jsonString;
 }
+async function updateDateBase(event, animeList) {
+	// jsonObj = {};
+	// jsonObj["data"] = animeList;
+	// const newData = JSON.stringify(animeList);
+	fs.writeFile("./database.json", animeList, (err) => {
+		if (err) {
+			throw err;
+		}
+		console.log("JSON data is saved.");
+	});
+}
 async function writeCoverImage(event, fileName, url_path) {
-	// await request(url_path).pipe(fs.createWriteStream(fileName));
-	// var result = await fs.createWriteStream(fileName).write(response_data);
 	try {
 		const response = await axios({
 			method: "GET",
@@ -80,6 +88,7 @@ app.on("ready", function () {
 		mainWindow.unmaximize();
 	});
 	ipcMain.handle("write-cover-image", writeCoverImage);
+	ipcMain.handle("update-database", updateDateBase);
 	if (!app.isPackaged) mainWindow.webContents.openDevTools();
 });
 

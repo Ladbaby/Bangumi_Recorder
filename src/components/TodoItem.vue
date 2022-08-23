@@ -34,8 +34,6 @@ export default {
       return this.animeList.filter((row) => this.statusShowItem[row.id] != 0);
     },
     getImgUrl(pet) {
-      // var images = require.context("./coverImages", false, /\.jpg$/);
-      // return images("./" + pet + ".jpg");
       return require('./coverImages/'+ pet);
     },
   },
