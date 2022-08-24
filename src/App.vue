@@ -1,5 +1,6 @@
 <script>
 import TodoItem from "./components/TodoItem.vue";
+import EditItem from "./components/EditItem.vue";
 const axios = require("axios");
 const cheerio = require("cheerio");
 global.Buffer = global.Buffer || require("buffer").Buffer;
@@ -7,6 +8,7 @@ global.Buffer = global.Buffer || require("buffer").Buffer;
 export default {
   components: {
     TodoItem,
+    EditItem,
   },
   data() {
     return {
@@ -14,11 +16,20 @@ export default {
       animeList: [],
       inputText: "Search",
       ifMaxed: false,
+      ifEditShow: false,
+      editItemTemp: {},
     };
   },
   created() {
     this.loadDatabase();
-    this.$watch('animeList', () => window.electronAPI.updateDateBase(JSON.stringify({"data": this.animeList})), {deep: true});
+    this.$watch(
+      "animeList",
+      () =>
+        window.electronAPI.updateDateBase(
+          JSON.stringify({ data: this.animeList })
+        ),
+      { deep: true }
+    );
   },
   // watch: {
   //   animeList: {
@@ -42,9 +53,6 @@ export default {
       this.initStatus();
       // this.fetchFromWeb("https://bangumi.tv/subject/27364");
     },
-    // updateDateBase(){
-    //   window.electronAPI.updateDateBase(this.animeList);
-    // },
     toMin() {
       window.electronAPI.minApp();
     },
@@ -106,10 +114,28 @@ export default {
         "./src/components/coverImages/" + fileName,
         newObj["coverImage"]
       );
-      newObj["coverImage"] = '' + fileName;
+      newObj["coverImage"] = "" + fileName;
       this.animeList.push(newObj);
       this.statusShowItem[newObj["id"]] = 1;
       console.log(this.animeList);
+    },
+    addItem() {
+      this.editItemTemp = {};
+
+      this.editItemTemp["id"] = this.animeList.length;
+      this.editItemTemp["text"] = "";
+      this.editItemTemp["coverImage"] = "";
+
+      this.ifEditShow = true;
+    },
+    abortNewItem() {
+      this.ifEditShow = false;
+    },
+    editItem() {
+      return;
+    },
+    confirmItem() {
+      return;
     },
   },
 };
@@ -207,12 +233,111 @@ export default {
         type="text"
         class="search-box-input"
       />
+      <div id="item-controls">
+        <Transition name="slide-up">
+          <div
+            class="button"
+            id="add-button"
+            @click="addItem()"
+            v-if="!ifEditShow"
+          >
+            <img
+              class="icon"
+              srcset="
+                ./icons/add-32.png  1x,
+                ./icons/add-32.png  1.25x,
+                ./icons/add-32.png  1.5x,
+                ./icons/add-32.png  1.75x,
+                ./icons/add-64.png  2x,
+                ./icons/add-64.png  2.25x,
+                ./icons/add-64.png  2.5x,
+                ./icons/add-128.png 3x,
+                ./icons/add-128.png 3.5x
+              "
+              draggable="false"
+            />
+          </div>
+          <div
+            class="button"
+            id="check-button"
+            @click="checkItem()"
+            v-if="ifEditShow"
+          >
+            <img
+              class="icon"
+              srcset="
+                ./icons/check-32.png  1x,
+                ./icons/check-32.png  1.25x,
+                ./icons/check-32.png  1.5x,
+                ./icons/check-32.png  1.75x,
+                ./icons/check-64.png  2x,
+                ./icons/check-64.png  2.25x,
+                ./icons/check-64.png  2.5x,
+                ./icons/check-128.png 3x,
+                ./icons/check-128.png 3.5x
+              "
+              draggable="false"
+            />
+          </div>
+        </Transition>
+        <Transition name="slide-up">
+          <div
+            class="button"
+            id="edit-button"
+            @click="editItem()"
+            v-if="!ifEditShow"
+          >
+            <img
+              class="icon"
+              srcset="
+                ./icons/edit-32.png  1x,
+                ./icons/edit-32.png  1.25x,
+                ./icons/edit-32.png  1.5x,
+                ./icons/edit-32.png  1.75x,
+                ./icons/edit-64.png  2x,
+                ./icons/edit-64.png  2.25x,
+                ./icons/edit-64.png  2.5x,
+                ./icons/edit-128.png 3x,
+                ./icons/edit-128.png 3.5x
+              "
+              draggable="false"
+            />
+          </div>
+          <div
+            class="button"
+            id="cancel-button"
+            @click="abortNewItem()"
+            v-else-if="ifEditShow"
+          >
+            <img
+              class="icon"
+              srcset="
+                ./icons/cancel-32.png  1x,
+                ./icons/cancel-32.png  1.25x,
+                ./icons/cancel-32.png  1.5x,
+                ./icons/cancel-32.png  1.75x,
+                ./icons/cancel-64.png  2x,
+                ./icons/cancel-64.png  2.25x,
+                ./icons/cancel-64.png  2.5x,
+                ./icons/cancel-128.png 3x,
+                ./icons/cancel-128.png 3.5x
+              "
+              draggable="false"
+            />
+          </div>
+        </Transition>
+      </div>
     </div>
     <TodoItem
       :animeList="animeList"
       :statusShowItem="statusShowItem"
       @show-detail="showDetail"
     ></TodoItem>
+    <EditItem
+      :ifEditShow="ifEditShow"
+      :todoItem="editItemTemp"
+      :nextID="animeList.length"
+    ></EditItem>
   </div>
 </template>
 
@@ -394,6 +519,7 @@ body {
   font-family: Roboto, sans-serif;
   font-size: 16px;
   overflow-x: hidden;
+  overflow-y: hidden;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
@@ -434,5 +560,112 @@ input.search-box-input {
 input.search-box-input:focus {
   outline: none !important;
   width: 50%;
+}
+#item-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 46px);
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  -webkit-app-region: no-drag;
+}
+#item-controls .button {
+  grid-row: 1 / span 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+#add-button {
+  grid-column: 1;
+}
+#check-button {
+  grid-column: 1;
+}
+#cancel-button {
+  grid-column: 2;
+}
+#edit-button {
+  grid-column: 2;
+}
+@media (-webkit-device-pixel-ratio: 1.5),
+  (device-pixel-ratio: 1.5),
+  (-webkit-device-pixel-ratio: 2),
+  (device-pixel-ratio: 2),
+  (-webkit-device-pixel-ratio: 3),
+  (device-pixel-ratio: 3) {
+  #item-controls .icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+#item-controls img {
+  width: auto;
+  height: 50%;
+}
+#item-controls #add-button:hover img {
+  transform-origin: center center;
+  animation: scaleRotate 0.2s ease-in-out forwards;
+}
+#item-controls #cancel-button:hover img {
+  transform-origin: center center;
+  animation: scaleRotate 0.2s ease-in-out forwards;
+}
+#item-controls #edit-button:hover img {
+  transform-origin: center center;
+  animation: scale 0.2s ease-in-out forwards;
+}
+#item-controls #check-button:hover img {
+  transform-origin: center center;
+  animation: scale 0.2s ease-in-out forwards;
+}
+@keyframes scaleRotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+    -webkit-transform: rotate(0deg) scale(1);
+  }
+  100% {
+    transform: rotate(90deg) scale(1.3);
+    -webkit-transform: rotate(90deg) scale(1.3);
+  }
+}
+@keyframes scale {
+  0% {
+    transform: scale(1);
+    -webkit-transform: scale(1);
+  }
+  100% {
+    transform: scale(1.3);
+    -webkit-transform: scale(1.3);
+  }
+}
+#add-button:active .icon {
+  filter: invert(1);
+}
+#cancel-button:active .icon {
+  filter: invert(1);
+}
+#edit-button:active .icon {
+  filter: invert(1);
+}
+#check-button:active .icon {
+  filter: invert(1);
+}
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.25s ease-out;
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
 }
 </style>
