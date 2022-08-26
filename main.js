@@ -49,7 +49,7 @@ async function updateDateBase(event, animeList) {
 		if (err) {
 			throw err;
 		}
-		console.log("JSON data is saved.");
+		// console.log("JSON data is saved.");
 	});
 }
 async function writeCoverImage(event, fileName, url_path) {
@@ -64,11 +64,33 @@ async function writeCoverImage(event, fileName, url_path) {
 			},
 		});
 		var result = await response.data.pipe(fs.createWriteStream(fileName));
-		console.log(result);
+		// console.log(result);
 	} catch (err) {
 		throw new Error(err);
 	}
 	return true;
+}
+function checkImageExist(event, fileName) {
+  // var ifExist = false;
+	// await fs.open("./src/components/coverImages/" + fileName, 'r', (err, f) => {
+	// 	if (err) {
+  //     ifExist = false;
+	// 	}
+  //   else {
+  //     // console.log(f);
+  //     ifExist = true;
+  //   }
+	// });
+  // console.log(__dirname + "./src/components/coverImages/" + fileName);
+  if (fs.existsSync("./src/components/coverImages/27364_B4xxy.jpg")) {
+    return true;
+  }
+  else {
+    console.log(false);
+    return false;
+  }
+  // console.log(ifExist);
+  // return ifExist;
 }
 app.on("ready", function () {
 	ipcMain.handle("show-data", readDatabase);
@@ -89,6 +111,7 @@ app.on("ready", function () {
 	});
 	ipcMain.handle("write-cover-image", writeCoverImage);
 	ipcMain.handle("update-database", updateDateBase);
+	ipcMain.handle("check-image-exist", checkImageExist);
 	if (!app.isPackaged) mainWindow.webContents.openDevTools();
 });
 

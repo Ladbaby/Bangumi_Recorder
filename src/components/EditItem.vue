@@ -6,9 +6,7 @@ export default {
   data() {
     return {
       itemTemp: {
-        // "id": 999999,
-        // "text": "",
-        // "coverImage": ""
+        
       },
       bangumiName: "",
       touched: false,
@@ -35,29 +33,20 @@ export default {
     // });
   },
   methods: {
-    // updateName(event) {
-    //   this.touched = true;
-    //   this.syncName(event.target.value);
-    // },
-    // syncName: _debounce(function () {
-    //   this.touched = false;
-    // }, 600),
     updateName() {
       if (this.bangumiName.trim() != "") {
         this.debounceInput();
       }
     },
     debounceInput: _debounce(function () {
-      this.itemTemp["text"] = this.bangumiName;
-      this.searchByName(this.itemTemp["text"]);
+      this.searchByName(this.bangumiName);
     }, 600),
     async searchByName(name) {
       var searchURL =
         "https://bangumi.tv/subject_search/" +
         encodeURIComponent(name) +
         "?cat=2";
-      // var idTemp = this.nextID;
-      var searchResult = await axios
+      this.searchList = await axios
         .get(searchURL)
         .then(function (response) {
           const $ = cheerio.load(response.data);
@@ -71,7 +60,7 @@ export default {
           for (var i = 0; i < nameList.length; ++i){
             var objTemp = {}
             objTemp["name"] = nameList[i];
-            objTemp["link"] = hrefList[i];
+            objTemp["link"] = "https://bangumi.tv" + hrefList[i];
             resultList.push(objTemp);
           }
           return resultList;
@@ -80,14 +69,37 @@ export default {
           console.log(error);
           return;
         });
-      for (var i = 0; i < searchResult.length; ++i) {
-        console.log(searchResult[i].name);
-        console.log(searchResult[i].link);
-      }
+    },
+    async fetchFromWeb(url) {
+      var listLength = this.nextID;
+      this.itemTemp = await axios
+        .get(url)
+        .then(function (response) {
+          const $ = cheerio.load(response.data);
+          var objTemp = {};
+          objTemp["id"] = listLength;
+          objTemp["text"] = $("a", "h1.nameSingle")
+              .map((i, x) => $(x).text())
+              .toArray()[0];
+          objTemp["coverImage"] =
+            "https:" +
+            $("img.cover")
+              .map((i, x) => $(x).attr("src"))
+              .toArray()[0];
+          objTemp["coverImage"] = objTemp["coverImage"].replace("/c/", "/l/");
+          return objTemp;
+        })
+        .catch(function (error) {
+          console.log(error);
+          return;
+        });
     },
     displayDetail(item){
-      console.log(item);
+      this.fetchFromWeb(item.link);
       return;
+    },
+    getNewItem() {
+      return this.itemTemp;
     }
   },
 };
@@ -108,7 +120,9 @@ export default {
           placeholder="Search..."
         />
         <TransitionGroup name="search-list" tag="ul">
-          <li v-for="item in searchList" :key="item.url" class="search-list-li" @click="displayDetail(item)"/>
+          <li v-for="item in searchList" :key="item.link" class="search-list-li" @click="displayDetail(item)">
+            {{item.name}}
+          </li>
         </TransitionGroup>
       </div>
     </span>
@@ -141,7 +155,6 @@ export default {
   margin-top: 2vh;
 
   transition: all 0.5s ease-in-out;
-  /* display: inline-block; */
   margin-right: 15px;
   width: 98%;
   height: 100%;
@@ -185,7 +198,7 @@ export default {
 
 .search-div {
   width: 100%;
-  padding-left: 20px;
+  padding-left: 200px !important;
   vertical-align: top;
   margin: 0;
   padding: 0;
@@ -209,8 +222,7 @@ export default {
   color: rgba(0, 0, 0, 0.87);
   min-height: 1em;
   height: 32px;
-  width: 20%;
-  left: 0.2em;
+  width: 80%;
   will-change: box-shadow;
   font-family: Roboto, sans-serif;
   font-size: 16px;
@@ -221,9 +233,41 @@ export default {
   display: inline-block;
   top: 0.5em;
   text-align: center;
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 5px 8px 0 rgba(0, 0, 0, 0.14),
+    0 1px 14px 0 rgba(0, 0, 0, 0.12) !important;
+  /* background-image: url("../icons/search.png");
+  background-position: 10px 10px; 
+  background-repeat: no-repeat; */
 }
-/* #search-name:focus {
-  outline: none !important;
-  width: 50%;
-} */
+.search-list-move,
+.search-list-enter-active,
+.search-list-leave-active {
+  transition: all 0.3s ease;
+}
+.search-list-enter-from,
+.search-list-leave-to {
+  opacity: 0;
+}
+.search-list-leave-active {
+  position: absolute;
+}
+ul {
+  margin: auto;
+  margin-top: 12px;
+  width:80%;
+  border-radius: 10px;
+  background-color: hsla(0, 0%, 100%, 0.75) !important;
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 5px 8px 0 rgba(0, 0, 0, 0.14),
+    0 1px 14px 0 rgba(0, 0, 0, 0.12) !important;
+  list-style-type: none;
+}
+.search-list-li {
+  border-radius: 10px;
+}
+.search-list-li:hover {
+  background-color: rgb(186, 186, 186);
+}
+.search-list-li:active {
+  filter: invert(1);
+}
 </style>

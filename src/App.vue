@@ -18,10 +18,11 @@ export default {
       ifMaxed: false,
       ifEditShow: false,
       editItemTemp: {},
+      localImageDict: {},
     };
   },
-  created() {
-    this.loadDatabase();
+  async created() {
+    await this.loadDatabase();
     this.$watch(
       "animeList",
       () =>
@@ -45,13 +46,16 @@ export default {
       const jsonData = JSON.parse(jsonObject);
       for (var i = 0; i < jsonData.data.length; ++i) {
         try {
+          await this.checkImageExist(
+            jsonData.data[i].id,
+            jsonData.data[i].coverImage
+          );
           this.animeList.push(jsonData.data[i]);
         } catch (err) {
           console.log("Error while appending list:", err);
         }
       }
       this.initStatus();
-      // this.fetchFromWeb("https://bangumi.tv/subject/27364");
     },
     toMin() {
       window.electronAPI.minApp();
@@ -117,7 +121,6 @@ export default {
       newObj["coverImage"] = "" + fileName;
       this.animeList.push(newObj);
       this.statusShowItem[newObj["id"]] = 1;
-      console.log(this.animeList);
     },
     addItem() {
       this.editItemTemp = {};
@@ -134,8 +137,28 @@ export default {
     editItem() {
       return;
     },
-    confirmItem() {
+    async confirmItem() {
+      var newItem = this.$refs.editItemComponent.getNewItem();
+      await this.saveImage(newItem["coverImage"]);
+      this.statusShowItem[newItem["id"]] = 1;
+      this.localImageDict[newItem["id"]] = false;
+      this.animeList.push(newItem);
+      this.ifEditShow = false;
       return;
+    },
+    async saveImage(originalURL) {
+      const fileName = /[^/]*$/.exec(originalURL);
+      await window.electronAPI.writeCoverImage(
+        "./src/components/coverImages/" + fileName,
+        originalURL
+      );
+      return "" + fileName;
+    },
+    async checkImageExist(id, originalURL) {
+      var fileName = /[^/]*$/.exec(originalURL) + "";
+      this.localImageDict[id] = await window.electronAPI.checkImageExist(
+        fileName
+      );
     },
   },
 };
@@ -260,7 +283,7 @@ export default {
           <div
             class="button"
             id="check-button"
-            @click="checkItem()"
+            @click="confirmItem()"
             v-if="ifEditShow"
           >
             <img
@@ -331,12 +354,14 @@ export default {
     <TodoItem
       :animeList="animeList"
       :statusShowItem="statusShowItem"
+      :localImageDict="localImageDict"
       @show-detail="showDetail"
     ></TodoItem>
     <EditItem
       :ifEditShow="ifEditShow"
       :todoItem="editItemTemp"
       :nextID="animeList.length"
+      ref="editItemComponent"
     ></EditItem>
   </div>
 </template>

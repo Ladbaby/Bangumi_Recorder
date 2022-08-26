@@ -7,5 +7,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   restoreApp: () => ipcRenderer.send('restore-app'),
   showData: () => ipcRenderer.invoke('show-data'),
   writeCoverImage: (fileName, url) => ipcRenderer.invoke('write-cover-image', fileName, url),
-  updateDateBase: (animeList) => ipcRenderer.invoke('update-database', animeList)
+  updateDateBase: (animeList) => ipcRenderer.invoke('update-database', animeList),
+  checkImageExist: (fileName) => ipcRenderer.invoke('check-image-exist', fileName)
 })

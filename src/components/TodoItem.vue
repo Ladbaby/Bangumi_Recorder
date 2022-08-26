@@ -8,9 +8,7 @@ export default {
   props: {
     animeList: Array,
     statusShowItem: Object,
-    // todo: Object,
-    // ifSeen: Number,
-    // itemCSS: Object,
+    localImageDict: Object,
   },
   emits: ["show-detail"],
   // computed: {
@@ -33,8 +31,16 @@ export default {
     selectedList() {
       return this.animeList.filter((row) => this.statusShowItem[row.id] != 0);
     },
-    getImgUrl(pet) {
-      return require('./coverImages/'+ pet);
+    getImageURL(id, originalURL) {
+      var fileName = /[^/]*$/.exec(originalURL) + "";
+      if (this.localImageDict[id]) {
+        return require("./coverImages/" + fileName);
+      } else {
+        return originalURL;
+      }
+    },
+    onImageLoadFailure(event) {
+      event.target.src = require("./coverImages/98987296_p0.jpg");
     },
   },
 };
@@ -50,7 +56,11 @@ export default {
       @click="$emit('show-detail', item.id)"
     >
       <div class="cover-div">
-        <img :src="getImgUrl(item.coverImage)" alt="./coverImages/98987296_p0.jpg" class="cover-image" />
+        <img
+          :src="getImageURL(item.id, item.coverImage)"
+          @error="onImageLoadFailure($event)"
+          class="cover-image"
+        />
       </div>
       <div class="cover-intro">
         <h2 class="header">{{ item.text }}</h2>
