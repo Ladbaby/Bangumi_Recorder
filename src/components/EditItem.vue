@@ -5,12 +5,11 @@ const cheerio = require("cheerio");
 export default {
   data() {
     return {
-      itemTemp: {
-        
-      },
+      itemTemp: {},
       bangumiName: "",
       touched: false,
-      searchList: []
+      searchList: [],
+      ifLoading: false,
     };
   },
   props: {
@@ -42,6 +41,10 @@ export default {
       this.searchByName(this.bangumiName);
     }, 600),
     async searchByName(name) {
+      if (name.trim() == ""){
+        return;
+      }
+      this.ifLoading = true;
       var searchURL =
         "https://bangumi.tv/subject_search/" +
         encodeURIComponent(name) +
@@ -56,9 +59,9 @@ export default {
           var hrefList = $("a.l", "#browserItemList")
             .map((i, x) => $(x).attr("href"))
             .toArray();
-          var resultList = []
-          for (var i = 0; i < nameList.length; ++i){
-            var objTemp = {}
+          var resultList = [];
+          for (var i = 0; i < nameList.length; ++i) {
+            var objTemp = {};
             objTemp["name"] = nameList[i];
             objTemp["link"] = "https://bangumi.tv" + hrefList[i];
             resultList.push(objTemp);
@@ -69,8 +72,10 @@ export default {
           console.log(error);
           return;
         });
+      this.ifLoading = false;
     },
     async fetchFromWeb(url) {
+      this.ifLoading = true;
       var listLength = this.nextID;
       this.itemTemp = await axios
         .get(url)
@@ -79,8 +84,8 @@ export default {
           var objTemp = {};
           objTemp["id"] = listLength;
           objTemp["text"] = $("a", "h1.nameSingle")
-              .map((i, x) => $(x).text())
-              .toArray()[0];
+            .map((i, x) => $(x).text())
+            .toArray()[0];
           objTemp["coverImage"] =
             "https:" +
             $("img.cover")
@@ -93,14 +98,21 @@ export default {
           console.log(error);
           return;
         });
+      this.ifLoading = false;
     },
-    displayDetail(item){
+    displayDetail(item) {
       this.fetchFromWeb(item.link);
       return;
     },
     getNewItem() {
       return this.itemTemp;
-    }
+    },
+    search_box_computed() {
+      return {
+        search_box: true,
+        search_box_loading: this.ifLoading,
+      };
+    },
   },
 };
 </script>
@@ -113,15 +125,20 @@ export default {
       </div>
       <div class="search-div">
         <input
-          id="search-name"
+          :class="search_box_computed()"
           type="text"
           v-model="bangumiName"
-          :input="updateName()"
+          @input="updateName"
           placeholder="Search..."
         />
         <TransitionGroup name="search-list" tag="ul">
-          <li v-for="item in searchList" :key="item.link" class="search-list-li" @click="displayDetail(item)">
-            {{item.name}}
+          <li
+            v-for="item in searchList"
+            :key="item.link"
+            class="search-list-li"
+            @click="displayDetail(item)"
+          >
+            {{ item.name }}
           </li>
         </TransitionGroup>
       </div>
@@ -211,9 +228,11 @@ export default {
   position: relative;
   text-align: center;
 }
-#search-name {
+.search_box {
   border-radius: 10px;
   background-color: hsla(0, 0%, 100%, 0.75) !important;
+  background-repeat: no-repeat;
+  background-size: contain;
   transition: box-shadow 225ms ease-out, -webkit-box-shadow 225ms ease-out;
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 5px 8px 0 rgba(0, 0, 0, 0.14),
     0 1px 14px 0 rgba(0, 0, 0, 0.12) !important;
@@ -239,6 +258,9 @@ export default {
   background-position: 10px 10px; 
   background-repeat: no-repeat; */
 }
+.search_box_loading {
+  background-image: url("../icons/loading-circle.gif");
+}
 .search-list-move,
 .search-list-enter-active,
 .search-list-leave-active {
@@ -254,7 +276,7 @@ export default {
 ul {
   margin: auto;
   margin-top: 12px;
-  width:80%;
+  width: 80%;
   border-radius: 10px;
   background-color: hsla(0, 0%, 100%, 0.75) !important;
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 5px 8px 0 rgba(0, 0, 0, 0.14),
