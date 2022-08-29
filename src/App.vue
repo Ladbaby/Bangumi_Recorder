@@ -17,6 +17,7 @@ export default {
       inputText: "Search",
       ifMaxed: false,
       ifEditShow: false,
+      ifRemove: false,
       editItemTemp: {},
       localImageDict: {},
     };
@@ -135,7 +136,8 @@ export default {
       this.ifEditShow = false;
     },
     editItem() {
-      return;
+      this.ifRemove = !this.ifRemove;
+      // return;
     },
     async confirmItem() {
       var newItem = this.$refs.editItemComponent.getNewItem();
@@ -355,6 +357,7 @@ export default {
       :animeList="animeList"
       :statusShowItem="statusShowItem"
       :localImageDict="localImageDict"
+      :ifRemove="ifRemove"
       @show-detail="showDetail"
     ></TodoItem>
     <EditItem

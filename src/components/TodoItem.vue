@@ -9,6 +9,7 @@ export default {
     animeList: Array,
     statusShowItem: Object,
     localImageDict: Object,
+    ifRemove: Boolean,
   },
   emits: ["show-detail"],
   // computed: {
@@ -55,6 +56,9 @@ export default {
       :class="card_computed(item.id)"
       @click="$emit('show-detail', item.id)"
     >
+      <Transition name="bounce">
+        <a href="#" v-show="ifRemove">x</a>
+      </Transition>
       <div class="cover-div">
         <img
           :src="getImageURL(item.id, item.coverImage)"
@@ -178,4 +182,37 @@ ul {
   text-align: center;
   line-height: 2;
 }
+li a {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background: red;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  z-index: 5;
+  color: white;
+}
+.bounce-enter-active{
+  animation: bounce-in 0.5s;
+}
+.bounce-leave-active {
+  animation: bounce-in 0.5s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 </style>
