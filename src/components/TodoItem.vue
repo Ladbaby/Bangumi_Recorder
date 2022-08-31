@@ -54,20 +54,23 @@ export default {
       :key="item.id"
       v-show="statusShowItem[item.id]"
       :class="card_computed(item.id)"
-      @click="$emit('show-detail', item.id)"
     >
       <Transition name="bounce">
-        <a href="#" v-show="ifRemove">x</a>
+        <a href="#" v-show="ifRemove" @click="$emit('remove-item', item.id)"
+          >x</a
+        >
       </Transition>
-      <div class="cover-div">
-        <img
-          :src="getImageURL(item.id, item.coverImage)"
-          @error="onImageLoadFailure($event)"
-          class="cover-image"
-        />
-      </div>
-      <div class="cover-intro">
-        <h2 class="header">{{ item.text }}</h2>
+      <div class="card-clickable" @click="$emit('show-detail', item.id)">
+        <div class="cover-div">
+          <img
+            :src="getImageURL(item.id, item.coverImage)"
+            @error="onImageLoadFailure($event)"
+            class="cover-image"
+          />
+        </div>
+        <div class="cover-intro">
+          <h2 class="header">{{ item.text }}</h2>
+        </div>
       </div>
     </li>
   </TransitionGroup>
@@ -88,6 +91,7 @@ ul {
 .list-enter-from,
 .list-leave-to {
   opacity: 0;
+  transform: translateY(30px);
 }
 .list-leave-active {
   position: absolute;
@@ -123,6 +127,22 @@ ul {
   margin-right: 10px;
 }
 
+.card_min:hover {
+  transform-origin: center center;
+  animation: scale 0.2s ease-in-out forwards;
+}
+
+@keyframes scale {
+  0% {
+    transform: scale(1);
+    -webkit-transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+    -webkit-transform: scale(1.05);
+  }
+}
+
 .card_min {
   width: 150px;
   height: 280px;
@@ -135,6 +155,10 @@ ul {
   position: fixed;
   left: 5px;
   top: 15vh;
+}
+
+.card-clickable {
+  height: 100%;
 }
 
 .cover-div {
@@ -197,7 +221,7 @@ li a {
   z-index: 5;
   color: white;
 }
-.bounce-enter-active{
+.bounce-enter-active {
   animation: bounce-in 0.5s;
 }
 .bounce-leave-active {
@@ -214,5 +238,4 @@ li a {
     transform: scale(1);
   }
 }
-
 </style>

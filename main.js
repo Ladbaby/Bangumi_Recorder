@@ -67,12 +67,18 @@ async function writeCoverImage(event, fileName, url_path) {
 	return true;
 }
 function checkImageExist(event, fileName) {
-  if (fs.existsSync("./src/components/coverImages/27364_B4xxy.jpg")) {
+  if (fs.existsSync("./src/components/coverImages/" + fileName)) {
     return true;
   }
   else {
-    console.log(false);
     return false;
+  }
+}
+function removeImage(event, fileName) {
+  if (fs.existsSync("./src/components/coverImages/" + fileName)) {
+    fs.unlink("./src/components/coverImages/" + fileName, (err) => {
+      if (err) throw err;
+    });
   }
 }
 app.on("ready", function () {
@@ -95,6 +101,7 @@ app.on("ready", function () {
 	ipcMain.handle("write-cover-image", writeCoverImage);
 	ipcMain.handle("update-database", updateDateBase);
 	ipcMain.handle("check-image-exist", checkImageExist);
+  ipcMain.handle("remove-image", removeImage);
 	if (!app.isPackaged) mainWindow.webContents.openDevTools();
 });
 

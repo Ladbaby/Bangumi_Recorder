@@ -94,7 +94,7 @@ export default {
       }
     },
     async fetchFromWeb(url) {
-      var listLength = this.animeList.length;
+      var listLength = this.generateID();
       var newObj = await axios
         .get(url)
         .then(function (response) {
@@ -126,7 +126,7 @@ export default {
     addItem() {
       this.editItemTemp = {};
 
-      this.editItemTemp["id"] = this.animeList.length;
+      this.editItemTemp["id"] = this.generateID();
       this.editItemTemp["text"] = "";
       this.editItemTemp["coverImage"] = "";
 
@@ -160,6 +160,31 @@ export default {
       var fileName = /[^/]*$/.exec(originalURL) + "";
       this.localImageDict[id] = await window.electronAPI.checkImageExist(
         fileName
+      );
+    },
+    removeItem(id) {
+      for (var i = 0; i < this.animeList.length; i++) {
+        if (this.animeList[i].id === id) {
+          const fileName = /[^/]*$/.exec(this.animeList[i].coverImage);
+          window.electronAPI.removeImage(fileName);
+          this.animeList.splice(i, 1);
+          break;
+        }
+      }
+      delete this.statusShowItem[id];
+      if (id in this.localImageDict) {
+        delete this.localImageDict[id];
+      }
+      console.log(this.animeList);
+      console.log(this.statusShowItem);
+      console.log(this.localImageDict);
+    },
+    generateID() {
+      return (
+        Date.now().toString(36) +
+        Math.floor(
+          Math.pow(10, 12) + Math.random() * 9 * Math.pow(10, 12)
+        ).toString(36)
       );
     },
   },
@@ -359,11 +384,12 @@ export default {
       :localImageDict="localImageDict"
       :ifRemove="ifRemove"
       @show-detail="showDetail"
+      @remove-item="removeItem"
     ></TodoItem>
     <EditItem
       :ifEditShow="ifEditShow"
       :todoItem="editItemTemp"
-      :nextID="animeList.length"
+      :nextID="generateID()"
       ref="editItemComponent"
     ></EditItem>
   </div>

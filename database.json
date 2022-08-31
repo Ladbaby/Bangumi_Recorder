@@ -1,1 +1,24 @@
-{"data":[{"id":0,"text":"氷菓","coverImage":"https://lain.bgm.tv/pic/cover/l/cd/38/27364_B4xxy.jpg"},{"id":1,"text":"Fate/Zero","coverImage":"https://lain.bgm.tv/pic/cover/l/86/1f/10639_w4sHs.jpg"},{"id":2,"text":"Fate/stay night","coverImage":"https://lain.bgm.tv/pic/cover/l/f9/0f/290_6Qi5Q.jpg"},{"id":3,"text":"ようこそ実力至上主義の教室へ","coverImage":"https://lain.bgm.tv/pic/cover/l/87/01/214272_JVVxM.jpg"},{"id":4,"text":"Fate/Grand Carnival","coverImage":"https://lain.bgm.tv/pic/cover/l/d9/54/324249_h7Z6i.jpg"},{"id":5,"text":"CLANNAD -クラナド-","coverImage":"https://lain.bgm.tv/pic/cover/l/28/38/51_6PN42.jpg"}]}
+{
+	"data": [
+		{
+			"id": 0,
+			"text": "氷菓",
+			"coverImage": "https://lain.bgm.tv/pic/cover/l/cd/38/27364_B4xxy.jpg"
+		},
+		{
+			"id": 1,
+			"text": "Fate/Zero",
+			"coverImage": "https://lain.bgm.tv/pic/cover/l/86/1f/10639_w4sHs.jpg"
+		},
+		{
+			"id": 2,
+			"text": "サマータイムレンダ",
+			"coverImage": "https://lain.bgm.tv/pic/cover/l/d9/f5/326895_j1S2n.jpg"
+		},
+		{
+			"id": "l7g6vxa12ijayzl4s",
+			"text": "継母の連れ子が元カノだった",
+			"coverImage": "https://lain.bgm.tv/pic/cover/l/49/54/343106_cT6ZV.jpg"
+		}
+	]
+}
