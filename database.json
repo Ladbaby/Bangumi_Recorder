@@ -1,24 +1,108 @@
 {
 	"data": [
 		{
-			"id": 0,
-			"text": "氷菓",
-			"coverImage": "https://lain.bgm.tv/pic/cover/l/cd/38/27364_B4xxy.jpg"
-		},
-		{
-			"id": 1,
-			"text": "Fate/Zero",
-			"coverImage": "https://lain.bgm.tv/pic/cover/l/86/1f/10639_w4sHs.jpg"
-		},
-		{
-			"id": 2,
-			"text": "サマータイムレンダ",
+			"id": "l7hjspc8mx3b1f5h",
+			"text": "夏日重现",
+			"textJP": "サマータイムレンダ",
+			"话数: ": "25",
+			"放送开始: ": "2022年4月14日",
+			"放送星期: ": "星期四",
+			"原作: ": ["田中靖規"],
+			"导演: ": ["渡辺歩"],
 			"coverImage": "https://lain.bgm.tv/pic/cover/l/d9/f5/326895_j1S2n.jpg"
 		},
 		{
-			"id": "l7g6vxa12ijayzl4s",
-			"text": "継母の連れ子が元カノだった",
-			"coverImage": "https://lain.bgm.tv/pic/cover/l/49/54/343106_cT6ZV.jpg"
+			"id": "l7homsqg1zc13zuz4",
+			"text": "Fate/Zero",
+			"textJP": "Fate/Zero",
+			"话数: ": "25",
+			"放送开始: ": "2011年10月1日",
+			"原作: ": ["TYPE-MOON", "虚淵玄"],
+			"导演: ": ["あおきえい"],
+			"脚本: ": ["ufotable", "佐藤和治", "桧山彬", "吉田晃浩", "実弥島巧"],
+			"coverImage": "https://lain.bgm.tv/pic/cover/l/86/1f/10639_w4sHs.jpg"
+		},
+		{
+			"id": "l7j4ra4t29ex8gtv0",
+			"text": "君主·埃尔梅罗二世事件簿 魔眼收集列车 Grace note",
+			"textJP": "ロード・エルメロイⅡ世の事件簿 -魔眼蒐集列車 Grace note-",
+			"话数: ": "14",
+			"放送开始: ": "2019年7月6日",
+			"放送星期: ": "星期六",
+			"原作: ": ["三田誠", "TYPE-MOON"],
+			"导演: ": ["加藤誠"],
+			"coverImage": "https://lain.bgm.tv/pic/cover/l/1e/f7/267732_41wjh.jpg"
+		},
+		{
+			"id": "l7j4rvbu1nx85hf3j",
+			"text": "拜托了 爱因兹贝伦咨询室",
+			"textJP": "お願い!アインツベルン相談室",
+			"话数: ": "6",
+			"脚本: ": ["奈須きのこ"],
+			"分镜: ": ["栖原隆史", "野中阿斗", "BLACK", "武内崇"],
+			"演出: ": ["栖原隆史", "松田成志", "野中阿斗", "白井俊行"],
+			"人物设定: ": ["武内崇"],
+			"coverImage": "https://lain.bgm.tv/pic/cover/l/d7/a8/49619_33cEX.jpg"
+		},
+		{
+			"id": "l7j4s0al2biojitd9",
+			"text": "Fate/Zero cafe",
+			"textJP": "Fate/ゼロカフェ",
+			"话数: ": "1",
+			"原作: ": ["TYPE-MOON"],
+			"导演: ": ["白井俊行"],
+			"脚本: ": ["ufotable"],
+			"人物原案: ": ["武内崇"],
+			"coverImage": "https://lain.bgm.tv/pic/cover/l/db/02/77552_5i7bR.jpg"
+		},
+		{
+			"id": "l7j4s8hl1d3p6lbb3",
+			"text": "Fate/Zero cafe 第2弹",
+			"textJP": "Fate/ゼロカフェ 第2弾",
+			"话数: ": "1",
+			"原作: ": ["TYPE-MOON", "虚淵玄"],
+			"导演: ": ["白井俊行"],
+			"演出: ": ["白井俊行", "島袋リカルド"],
+			"摄影监督: ": ["吉川冴"],
+			"coverImage": "https://lain.bgm.tv/pic/cover/l/9d/2c/336523_ANPP1.jpg"
+		},
+		{
+			"id": "l7ju1mrx2wzwdc6md",
+			"中文名: ": "Fate/stay night UNLIMITED BLADE WORKS",
+			"textJP": "Fate/stay night UNLIMITED BLADE WORKS",
+			"话数: ": "1",
+			"原作: ": ["TYPE-MOON"],
+			"导演: ": ["山口祐司"],
+			"脚本: ": ["佐藤卓哉"],
+			"分镜: ": [
+				"柳沢テツヤ",
+				"山本秀世",
+				"西本由紀夫",
+				"寺東克己",
+				"山口祐司"
+			],
+			"coverImage": "https://lain.bgm.tv/pic/cover/l/96/6b/3484_Jha1e.jpg"
+		},
+		{
+			"id": "l7ju27xl10j7cfczq",
+			"中文名: ": "Fate/Grand Carnival",
+			"textJP": "Fate/Grand Carnival",
+			"话数: ": "4",
+			"原作: ": ["TYPE-MOON"],
+			"导演: ": ["岸誠二"],
+			"脚本: ": ["上江洲誠"],
+			"分镜: ": ["福岡大生", "鈴木行", "田中貴大", "岸誠二"],
+			"coverImage": "https://lain.bgm.tv/pic/cover/l/d9/54/324249_h7Z6i.jpg"
+		},
+		{
+			"id": "l7ju2gb7348jmrmot",
+			"话数: ": "1",
+			"textJP": "「Fate/Accel Zero Order」告知CM",
+			"製作: ": ["ufotable"],
+			"上映年度: ": "2016年4月20日",
+			"片长: ": "15s",
+			"undefined": "",
+			"coverImage": "https://lain.bgm.tv/pic/cover/l/85/e3/325898_VTwVa.jpg"
 		}
 	]
 }

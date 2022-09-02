@@ -43,6 +43,29 @@ export default {
     onImageLoadFailure(event) {
       event.target.src = require("./coverImages/98987296_p0.jpg");
     },
+    getTitle(item) {
+      if ("中文名: " in item) {
+        return item["中文名: "];
+      } else {
+        return item["textJP"];
+      }
+    },
+    selectedAttributes(item) {
+      var newObj = {};
+      for (const key of Object.keys(item)) {
+        if (
+          key != "id" &&
+          key != "textJP" &&
+          key != "coverImage" &&
+          key != "undefined" &&
+          key != "text" && 
+          key != "中文名: "
+        ) {
+          newObj[key] = item[key];
+        }
+      }
+      return newObj;
+    },
   },
 };
 </script>
@@ -60,7 +83,7 @@ export default {
           >x</a
         >
       </Transition>
-      <div class="card-clickable" @click="$emit('show-detail', item.id)">
+      <div class="card-clickable" @click="$emit('show-detail', item.id, false)">
         <div class="cover-div">
           <img
             :src="getImageURL(item.id, item.coverImage)"
@@ -69,7 +92,16 @@ export default {
           />
         </div>
         <div class="cover-intro">
-          <h2 class="header">{{ item.text }}</h2>
+          <h2 class="header">{{ getTitle(item) }}</h2>
+          <h3 class="subHeader">{{ item.textJP }}</h3>
+          <details id="detail-info">
+            <summary>详情信息</summary>
+            <ul id="detail-info-list">
+              <li v-for="(value, name) in selectedAttributes(item)" :key="name">
+                {{ name }}{{ value }}
+              </li>
+            </ul>
+          </details>
         </div>
       </div>
     </li>
@@ -82,6 +114,9 @@ ul {
   margin-top: 64px;
   width: 100%;
   height: 90%;
+  /* display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap; */
 }
 .list-move,
 .list-enter-active,
@@ -146,6 +181,7 @@ ul {
 .card_min {
   width: 150px;
   height: 280px;
+  min-width: 150px;
   position: relative;
 }
 
@@ -170,6 +206,12 @@ ul {
   position: relative;
   border-radius: 10px;
   float: left;
+  transition: all 0.5s ease-in-out;
+}
+
+.card_max > .card-clickable > .cover-div {
+  width: 260px !important;
+  height: 460px !important;
 }
 
 .cover-image {
@@ -191,7 +233,7 @@ ul {
   vertical-align: top;
   margin: 0;
   padding: 0;
-  font-weight: 400;
+  /* font-weight: 400; */
   box-sizing: border-box;
   font-family: Microsoft YaHei, 微软雅黑, STHeiti, WenQuanYi Micro Hei, SimSun,
     sans-serif;
@@ -205,6 +247,12 @@ ul {
   margin-left: 5px;
   text-align: center;
   line-height: 2;
+}
+
+.subHeader {
+  font-size: 12px;
+  /* color: #999 */
+  text-align: center;
 }
 li a {
   position: absolute;
@@ -237,5 +285,23 @@ li a {
   100% {
     transform: scale(1);
   }
+}
+#detail-info-list {
+  margin: auto;
+  margin-left: 280px;
+  /* margin-top: 12px; */
+  width: 50%;
+  border-radius: 10px;
+  background-color: hsla(0, 0%, 100%, 0.75) !important;
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 5px 8px 0 rgb(0 0 0 / 14%),
+    0 1px 14px 0 rgb(0 0 0 / 12%) !important;
+  list-style-type: none;
+}
+details[open] summary ~ * {
+  animation: sweep .5s ease-in-out;
+}
+@keyframes sweep {
+  0%    {opacity: 0; transform: translateY(-10px)}
+  100%  {opacity: 1; transform: translateY(0)}
 }
 </style>

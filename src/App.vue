@@ -18,6 +18,7 @@ export default {
       ifMaxed: false,
       ifEditShow: false,
       ifRemove: false,
+      ifShowDetail: false,
       editItemTemp: {},
       localImageDict: {},
     };
@@ -78,17 +79,22 @@ export default {
       }
     },
     showDetail(id) {
-      if (this.statusShowItem[id] == 1) {
-        this.statusShowItem[id] = 2;
+      if (this.ifShowDetail) {
+        return;
       } else {
-        this.statusShowItem[id] = 1;
-      }
-      for (const [key, value] of Object.entries(this.statusShowItem)) {
-        if (key != id) {
-          if (value == 0) {
-            this.statusShowItem[key] = 1;
-          } else {
-            this.statusShowItem[key] = 0;
+        this.ifShowDetail = !this.ifShowDetail;
+        if (this.statusShowItem[id] == 1) {
+          this.statusShowItem[id] = 2;
+        } else {
+          this.statusShowItem[id] = 1;
+        }
+        for (const [key, value] of Object.entries(this.statusShowItem)) {
+          if (key != id) {
+            if (value == 0) {
+              this.statusShowItem[key] = 1;
+            } else {
+              this.statusShowItem[key] = 0;
+            }
           }
         }
       }
@@ -186,6 +192,15 @@ export default {
           Math.pow(10, 12) + Math.random() * 9 * Math.pow(10, 12)
         ).toString(36)
       );
+    },
+    hideDetail() {
+      this.ifShowDetail = !this.ifShowDetail;
+      for (const key of Object.keys(this.statusShowItem)) {
+        this.statusShowItem[key] = 1;
+      }
+    },
+    openSettings() {
+      return;
     },
   },
 };
@@ -375,6 +390,52 @@ export default {
               draggable="false"
             />
           </div>
+        </Transition>
+        <Transition name="slide-up">
+        <div
+          class="button"
+          id="return-button"
+          @click="hideDetail()"
+          v-if="ifShowDetail"
+        >
+          <img
+            class="icon"
+            srcset="
+              ./icons/return-32.png  1x,
+              ./icons/return-32.png  1.25x,
+              ./icons/return-32.png  1.5x,
+              ./icons/return-32.png  1.75x,
+              ./icons/return-64.png  2x,
+              ./icons/return-64.png  2.25x,
+              ./icons/return-64.png  2.5x,
+              ./icons/return-128.png 3x,
+              ./icons/return-128.png 3.5x
+            "
+            draggable="false"
+          />
+        </div>
+        <div
+          class="button"
+          id="settings-button"
+          @click="openSettings()"
+          v-else-if="!ifShowDetail"
+        >
+          <img
+            class="icon"
+            srcset="
+              ./icons/settings-32.png  1x,
+              ./icons/settings-32.png  1.25x,
+              ./icons/settings-32.png  1.5x,
+              ./icons/settings-32.png  1.75x,
+              ./icons/settings-64.png  2x,
+              ./icons/settings-64.png  2.25x,
+              ./icons/settings-64.png  2.5x,
+              ./icons/settings-128.png 3x,
+              ./icons/settings-128.png 3.5x
+            "
+            draggable="false"
+          />
+        </div>
         </Transition>
       </div>
     </div>
@@ -645,6 +706,12 @@ input.search-box-input:focus {
 #edit-button {
   grid-column: 2;
 }
+#return-button {
+  grid-column: 3;
+}
+#settings-button {
+  grid-column: 3;
+}
 @media (-webkit-device-pixel-ratio: 1.5),
   (device-pixel-ratio: 1.5),
   (-webkit-device-pixel-ratio: 2),
@@ -676,6 +743,14 @@ input.search-box-input:focus {
   transform-origin: center center;
   animation: scale 0.2s ease-in-out forwards;
 }
+#item-controls #return-button:hover img {
+  transform-origin: center center;
+  animation: scale 0.2s ease-in-out forwards;
+}
+#item-controls #settings-button:hover img {
+  transform-origin: center center;
+  animation: scaleRotate 0.2s ease-in-out forwards;
+}
 @keyframes scaleRotate {
   0% {
     transform: rotate(0deg) scale(1);
@@ -706,6 +781,12 @@ input.search-box-input:focus {
   filter: invert(1);
 }
 #check-button:active .icon {
+  filter: invert(1);
+}
+#return-button:active .icon {
+  filter: invert(1);
+}
+#settings-button:active .icon {
   filter: invert(1);
 }
 .slide-up-enter-active,
