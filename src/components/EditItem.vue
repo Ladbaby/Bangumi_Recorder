@@ -193,6 +193,24 @@ export default {
               .map((i, x) => $(x).attr("src"))
               .toArray()[0];
           objTemp["coverImage"] = objTemp["coverImage"].replace("/c/", "/l/");
+          // objTemp["episodeList"] = []
+          // $("a.load-epinfo", "ul.prg_list")
+          //     .each(function(index, element) {
+          //       var obj = {};
+          //       obj["text"] = $(element).text();
+          //       obj["title"] = $(element).attr("title");
+          //       objTemp["episodeList"].push(obj);
+          //     });
+          objTemp["episodeList"] = []
+          $("li", "ul.prg_list")
+              .each(function(index, element) {
+                var obj = {};
+                const $elements = $(element).children();
+                obj["class"] = $elements.attr("class");
+                obj["text"] = $elements.text();
+                obj["title"] = $elements.attr("title");
+                objTemp["episodeList"].push(obj);
+              });
           return objTemp;
         })
         .catch(function (error) {
@@ -271,13 +289,13 @@ export default {
   text-rendering: optimizeLegibility;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-text-size-adjust: 100%;
-  /* margin-top: 2vh; */
+  margin-top: 0;
 
   transition: all 0.5s ease-in-out;
-  /* margin-right: 15px; */
-  margin:auto;
-  width: 98%;
-  height: 85%;
+  margin-right: 10px;
+  /* margin:auto; */
+  width: calc(100% - 24px);
+  height: calc(100% - 112px);
   position: fixed;
   left: 12px;
   top: 100px;

@@ -58,13 +58,21 @@ export default {
           key != "textJP" &&
           key != "coverImage" &&
           key != "undefined" &&
-          key != "text" && 
-          key != "中文名: "
+          key != "text" &&
+          key != "中文名: " &&
+          key != "episodeList"
         ) {
           newObj[key] = item[key];
         }
       }
       return newObj;
+    },
+    getEpisodeClass(classValue) {
+      if (typeof classValue !== "undefined") {
+        return classValue;
+      } else {
+        return "subtitle-span";
+      }
     },
   },
 };
@@ -91,7 +99,12 @@ export default {
             class="cover-image"
           />
         </div>
-        <div class="cover-intro">
+        <div>
+          <h2 class="header" v-show="this.statusShowItem[item.id] == 1">
+            {{ getTitle(item) }}
+          </h2>
+        </div>
+        <div class="cover-intro" v-show="this.statusShowItem[item.id] == 2">
           <h2 class="header">{{ getTitle(item) }}</h2>
           <h3 class="subHeader">{{ item.textJP }}</h3>
           <details id="detail-info">
@@ -102,6 +115,18 @@ export default {
               </li>
             </ul>
           </details>
+          <div class="subject-prg">
+            <span class="tip">章节列表</span>
+            <ul id="prg-list">
+              <li
+                v-for="episode in item.episodeList"
+                :key="episode.text"
+                :class="getEpisodeClass(episode.class)"
+              >
+                {{ episode.text }}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </li>
@@ -111,9 +136,10 @@ export default {
 <style scoped>
 ul {
   padding-left: 12px;
-  margin-top: 64px;
+  margin-top: 56px;
   width: 100%;
-  height: 90%;
+  height: calc(100% - 56px);
+  list-style: none;
   /* display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap; */
@@ -179,18 +205,20 @@ ul {
 }
 
 .card_min {
-  width: 150px;
+  width: 185px;
   height: 280px;
   min-width: 150px;
   position: relative;
 }
 
 .card_max {
-  width: 98%;
-  height: 100%;
+  width: calc(100% - 24px);
+  height: calc(100% - 112px);
   position: fixed;
-  left: 5px;
-  top: 15vh;
+  left: 12px;
+  top: 100px;
+  overflow-y: auto;
+  margin-top: 0;
 }
 
 .card-clickable {
@@ -198,7 +226,7 @@ ul {
 }
 
 .cover-div {
-  width: 130px;
+  width: 165px;
   height: 230px;
   overflow: hidden;
   margin: 10px;
@@ -210,7 +238,7 @@ ul {
 }
 
 .card_max > .card-clickable > .cover-div {
-  width: 260px !important;
+  width: 330px !important;
   height: 460px !important;
 }
 
@@ -228,8 +256,8 @@ ul {
 }
 
 .cover-intro {
-  width: 100%;
-  padding-left: 20px;
+  width: calc(100% - 350px);
+  /* padding-left: 20px; */
   vertical-align: top;
   margin: 0;
   padding: 0;
@@ -239,12 +267,13 @@ ul {
     sans-serif;
   font-size: 14px;
   color: #666;
+  float: left;
   position: relative;
 }
 
 .header {
   font-size: 20px;
-  margin-left: 5px;
+  /* margin-left: 5px; */
   text-align: center;
   line-height: 2;
 }
@@ -287,21 +316,61 @@ li a {
   }
 }
 #detail-info-list {
-  margin: auto;
-  margin-left: 280px;
+  margin-top: 0;
   /* margin-top: 12px; */
-  width: 50%;
+  width: calc(100% - 12px);
   border-radius: 10px;
   background-color: hsla(0, 0%, 100%, 0.75) !important;
   box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 5px 8px 0 rgb(0 0 0 / 14%),
     0 1px 14px 0 rgb(0 0 0 / 12%) !important;
   list-style-type: none;
+  display: block;
 }
 details[open] summary ~ * {
-  animation: sweep .5s ease-in-out;
+  animation: sweep 0.5s ease-in-out;
 }
 @keyframes sweep {
-  0%    {opacity: 0; transform: translateY(-10px)}
-  100%  {opacity: 1; transform: translateY(0)}
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+ul#prg-list li {
+  font-family: "Lucida Grande", "Lucida Sans", Helvetica, Arial, Verdana,
+    sans-serif;
+  display: inline;
+  position: relative;
+  width: auto;
+  float: left;
+  font-size: 12px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  /* color: #06c;
+  background-color: #daeaff; */
+  line-height: 100%;
+  border-radius: 10px;
+  transition: all 0.5s ease;
+}
+ul#prg-list li.epBtnAir {
+  color: #06c;
+  background-color: #daeaff;
+}
+ul#prg-list li.epBtnNA {
+  color: #909090;
+  background-color: #e0e0e0;
+}
+ul#prg-list li.subtitle-span {
+  color: #8eb021;
+  border-left: 3px solid #8eb021;
+  background: white;
+}
+ul#prg-list {
+  margin-top: 0;
+  transition: all 0.5s ease;
 }
 </style>

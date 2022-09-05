@@ -508,7 +508,7 @@ body {
   overflow-y: auto !important;
   left: 0px;
   right: 0px;
-  padding-bottom: 32px;
+  /* padding-bottom: 32px; */
 }
 #main::-webkit-scrollbar {
   display: block;
