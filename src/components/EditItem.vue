@@ -211,6 +211,7 @@ export default {
                 obj["title"] = $elements.attr("title");
                 objTemp["episodeList"].push(obj);
               });
+          objTemp["subjectSummary"] = $("div#subject_summary").text();
           return objTemp;
         })
         .catch(function (error) {

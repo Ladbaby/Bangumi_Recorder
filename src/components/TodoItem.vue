@@ -60,7 +60,8 @@ export default {
           key != "undefined" &&
           key != "text" &&
           key != "中文名: " &&
-          key != "episodeList"
+          key != "episodeList" && 
+          key != "subjectSummary"
         ) {
           newObj[key] = item[key];
         }
@@ -108,7 +109,7 @@ export default {
           <h2 class="header">{{ getTitle(item) }}</h2>
           <h3 class="subHeader">{{ item.textJP }}</h3>
           <details id="detail-info">
-            <summary>详情信息</summary>
+            <summary><b>详情信息</b></summary>
             <ul id="detail-info-list">
               <li v-for="(value, name) in selectedAttributes(item)" :key="name">
                 {{ name }}{{ value }}
@@ -116,7 +117,9 @@ export default {
             </ul>
           </details>
           <div class="subject-prg">
-            <span class="tip">章节列表</span>
+            <span class="tip">
+              <h4>章节列表</h4>
+            </span>
             <ul id="prg-list">
               <li
                 v-for="episode in item.episodeList"
@@ -126,6 +129,10 @@ export default {
                 {{ episode.text }}
               </li>
             </ul>
+          </div>
+          <div id="subject-summary">
+            <h4>简介</h4>
+            {{ item.subjectSummary }}
           </div>
         </div>
       </div>
@@ -269,6 +276,8 @@ ul {
   color: #666;
   float: left;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
@@ -372,5 +381,8 @@ ul#prg-list li.subtitle-span {
 ul#prg-list {
   margin-top: 0;
   transition: all 0.5s ease;
+}
+div#subject-summary {
+  white-space: pre-line;
 }
 </style>

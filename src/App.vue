@@ -326,7 +326,7 @@ export default {
             class="button"
             id="check-button"
             @click="confirmItem()"
-            v-if="ifEditShow"
+            v-else-if="ifEditShow"
           >
             <img
               class="icon"
